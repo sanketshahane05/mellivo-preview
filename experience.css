@@ -1,0 +1,69 @@
+/* Mellivo interaction layer — intentionally separated from base layout */
+:root{--claw:#f4f3ef;--glow:#d7ff46}
+
+/* Custom honey-badger claw cursor (desktop/fine pointers only) */
+@media (pointer:fine){
+  body{cursor:none}
+  a,.node,.card,.industry-list a{cursor:none}
+  .cursor{width:30px;height:30px;background:transparent!important;border-radius:0!important;mix-blend-mode:difference;transition:opacity .2s}
+  .cursor span,.cursor:before,.cursor:after{content:"";position:absolute;left:8px;width:2px;height:20px;background:var(--claw);border-radius:2px;transform:rotate(28deg);transform-origin:center;box-shadow:0 0 7px rgba(255,255,255,.14)}
+  .cursor span{top:5px}.cursor:before{top:0;left:14px}.cursor:after{top:10px;left:2px}
+  .cursor-ring{mix-blend-mode:normal;border-color:rgba(244,243,239,.34);box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);backdrop-filter:blur(1px)}
+  .cursor-ring.hover{width:66px;height:66px;border-radius:50%;border-color:rgba(215,255,70,.55);box-shadow:0 0 40px rgba(215,255,70,.08),inset 0 0 30px rgba(215,255,70,.03)}
+  .cursor-ring.badger-mode{width:100px;height:100px;border-radius:50%;border-color:rgba(215,255,70,.72);box-shadow:0 0 60px rgba(215,255,70,.15)}
+}
+
+/* Hero animation 1 — hunting radar / living badger */
+.hero-art{isolation:isolate}
+.hero-art:after{content:"";position:absolute;inset:-20%;pointer-events:none;background:conic-gradient(from 0deg at 55% 49%,transparent 0 82%,rgba(215,255,70,.035) 88%,transparent 94%);animation:huntSweep 8s linear infinite;z-index:0}
+.badger-mark{z-index:3;will-change:transform}
+.badger-mark img{animation:badgerBreathe 4.8s ease-in-out infinite;transform-origin:55% 62%}
+.badger-mark:after{content:"";position:absolute;width:7px;height:4px;border-radius:50%;right:19%;top:55%;background:var(--glow);box-shadow:0 0 12px rgba(215,255,70,.8),0 0 28px rgba(215,255,70,.25);animation:badgerBlink 5.2s infinite}
+.radar{box-shadow:0 0 0 1px rgba(255,255,255,.006)}
+.r1:before,.r1:after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;background:var(--glow);box-shadow:0 0 16px rgba(215,255,70,.55)}
+.r1:before{left:13%;top:25%;animation:nodePulse 2.4s ease-in-out infinite}.r1:after{right:8%;bottom:31%;animation:nodePulse 2.4s .8s ease-in-out infinite}
+@keyframes huntSweep{to{transform:rotate(360deg)}}
+@keyframes badgerBreathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.008)}}
+@keyframes badgerBlink{0%,46%,50%,100%{transform:scaleY(1);opacity:1}48%{transform:scaleY(.08);opacity:.45}}
+@keyframes nodePulse{0%,100%{opacity:.3;transform:scale(.7)}50%{opacity:1;transform:scale(1.2)}}
+
+/* Scroll animation 2 — sections enter through a subtle depth plane */
+.reveal{filter:blur(7px);transform:translateY(34px) scale(.992)!important;transition:opacity .85s cubic-bezier(.2,.7,.15,1),transform 1s cubic-bezier(.2,.7,.15,1),filter .9s ease!important}
+.reveal.visible{filter:blur(0);transform:translateY(0) scale(1)!important}
+.section-head h2,.intro h2,.sticky h2,.contact h2{background:linear-gradient(100deg,var(--ink) 0%,var(--ink) 45%,#7c8079 56%,var(--ink) 68%);background-size:250% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;color:transparent}
+.reveal.visible h2,.visible.section-head h2{animation:textSheen 1.8s .18s cubic-bezier(.2,.7,.2,1) both}
+@keyframes textSheen{from{background-position:100% 0}to{background-position:0% 0}}
+
+/* Decision animation 3 — active node becomes a scanned / verified object */
+.node{overflow:hidden}
+.node:before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 20%,rgba(215,255,70,.05) 48%,transparent 72%);transform:translateX(-130%);pointer-events:none}
+.node.active:before,.node:hover:before{animation:nodeScan .9s ease forwards}
+.node.active:after,.node:hover:after{content:"VERIFIED";position:absolute;right:14px;bottom:12px;font:300 7px DM Mono,monospace;letter-spacing:.16em;color:var(--glow)}
+@keyframes nodeScan{to{transform:translateX(130%)}}
+.core{box-shadow:0 0 80px rgba(215,255,70,.018)}
+.decision.active .core{box-shadow:0 0 100px rgba(215,255,70,.06);border-color:rgba(215,255,70,.28)}
+.decision.active .core:after{content:"";position:absolute;inset:18px;border-radius:50%;border:1px solid rgba(215,255,70,.18);animation:corePing 1.6s ease-out infinite}
+@keyframes corePing{0%{transform:scale(.72);opacity:0}35%{opacity:.7}100%{transform:scale(1.55);opacity:0}}
+
+/* Honey badger cinematic section */
+.badger-pin:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at var(--px,75%) var(--py,50%),rgba(215,255,70,.07),transparent 20%),linear-gradient(180deg,transparent 65%,rgba(0,0,0,.28));z-index:1;pointer-events:none}
+.badger-bg:after{content:"";position:absolute;left:0;right:0;bottom:9%;height:1px;background:linear-gradient(90deg,transparent,rgba(244,243,239,.18),transparent);filter:blur(.5px)}
+#badgerHero{z-index:2;transform-origin:60% 85%}
+.badger-copy{pointer-events:none}
+.badger-copy strong{font-weight:500;color:var(--ink)}
+.scroll-note{z-index:7}
+
+/* Animated scratch transition when hovering big CTAs */
+.button,.talk,.email{position:relative;overflow:hidden}
+.button:before,.talk:before,.email:before{content:"";position:absolute;inset:-50%;background:repeating-linear-gradient(115deg,transparent 0 13px,rgba(215,255,70,.10) 14px 15px,transparent 16px 25px);transform:translateX(-120%);transition:transform .55s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.button:hover:before,.talk:hover:before,.email:hover:before{transform:translateX(120%)}
+
+/* Industry rows feel tactile */
+.industry-list a{position:relative;overflow:hidden}
+.industry-list a:before{content:"";position:absolute;left:0;top:50%;width:0;height:1px;background:var(--glow);transition:width .45s ease;opacity:.45}
+.industry-list a:hover:before{width:100%}
+.industry-list a b{transition:transform .35s ease,letter-spacing .35s ease}.industry-list a:hover b{transform:translateX(8px);letter-spacing:.01em}
+
+/* Better mobile/touch experience: animations survive, cursor disappears */
+@media (pointer:coarse){.cursor,.cursor-ring{display:none!important}.badger-mark:after{right:18%;top:55%}.hero-art:active .r3{border-color:rgba(215,255,70,.55)}.node:active{border-color:rgba(215,255,70,.55)} }
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
