@@ -12,3 +12,24 @@ $$('.tilt').forEach(card=>{card.addEventListener('pointermove',e=>{const r=card.
 $$('.magnetic').forEach(el=>{el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;el.style.transform=`translate(${x*.08}px,${y*.08}px)`});el.addEventListener('pointerleave',()=>el.style.transform='')});
 const badgerPin=$('#badgerPin');if(badgerPin){badgerPin.addEventListener('pointerenter',()=>ring&&ring.classList.add('badger-mode'));badgerPin.addEventListener('pointerleave',()=>ring&&ring.classList.remove('badger-mode'));badgerPin.addEventListener('pointermove',e=>{const r=badgerPin.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;badgerPin.style.setProperty('--px',`${(x+.5)*100}%`);badgerPin.style.setProperty('--py',`${(y+.5)*100}%`);const moon=$('.moon',badgerPin);if(moon)moon.style.transform=`translate(${x*22}px,${y*16}px)`})}
 if(matchMedia('(pointer:coarse)').matches){$$('.node').forEach(n=>n.addEventListener('click',()=>{decision?.classList.add('active');$$('.node').forEach(x=>x.classList.remove('active'));n.classList.add('active');if(tag)tag.textContent=n.dataset.label||'TRACE';if(txt)txt.textContent=(n.dataset.copy||'')+'_'}))}
+
+/* premium experience layer */
+(()=>{const link=document.createElement('link');link.rel='stylesheet';link.href='experience.css?v=3';document.head.appendChild(link);})();
+
+/* subtle velocity-based claw cursor rotation */
+let pmx=mx,pmy=my,cursorAngle=28;
+addEventListener('pointermove',e=>{const dx=e.clientX-pmx,dy=e.clientY-pmy;const speed=Math.min(18,Math.hypot(dx,dy));cursorAngle=28+Math.max(-10,Math.min(10,Math.atan2(dy,dx)*180/Math.PI*.06));if(cursor){cursor.style.rotate=`${cursorAngle}deg`;cursor.style.scale=`${1+speed*.008}`;}pmx=e.clientX;pmy=e.clientY},{passive:true});
+
+/* hero labels react as cursor approaches */
+if(art){const floats=$$('.float',art);art.addEventListener('pointermove',e=>{const ar=art.getBoundingClientRect();floats.forEach(f=>{const r=f.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,d=Math.hypot(e.clientX-cx,e.clientY-cy),k=Math.max(0,1-d/180);f.style.color=`rgba(215,255,70,${.15+k*.85})`;f.style.letterSpacing=`${.18+k*.08}em`})});art.addEventListener('pointerleave',()=>floats.forEach(f=>{f.style.color='';f.style.letterSpacing=''}));}
+
+/* scroll-driven badger release: progress also drives moon, copy and ground */
+const badgerSection=$('.badger'),badgerCopy=$('.badger-copy'),moon=$('.moon'),terrain=$('.terrain');
+function updateBadgerScene(){if(!badgerSection)return;const r=badgerSection.getBoundingClientRect(),travel=Math.max(1,badgerSection.offsetHeight-innerHeight),p=Math.min(1,Math.max(0,-r.top/travel));if(badgerCopy){badgerCopy.style.transform=`translate3d(0,${-p*18}px,0)`;badgerCopy.style.opacity=`${1-Math.max(0,(p-.7)/.3)*.5}`;}if(moon)moon.style.opacity=`${.05+p*.08}`;if(terrain)terrain.style.transform=`translateY(${(1-p)*18}px)`;badgerPin?.style.setProperty('--badger-progress',p)}
+addEventListener('scroll',updateBadgerScene,{passive:true});updateBadgerScene();
+
+/* tactile mobile: tap creates a short reasoning pulse */
+if(matchMedia('(pointer:coarse)').matches){$$('.button,.industry-list a,.card').forEach(el=>el.addEventListener('touchstart',()=>{el.classList.add('tap-pulse');setTimeout(()=>el.classList.remove('tap-pulse'),420)},{passive:true}))}
+
+/* keep the experience performant when tab is hidden */
+document.addEventListener('visibilitychange',()=>document.documentElement.classList.toggle('paused',document.hidden));
